@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        p {
+            text-align: center;
+            margin: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="buttonClick()" id="button">Start Game</button>
+    <p id="clicks">Clicks: 0</p>
+    <p id="time">Time: 0</p>
+    <p id="cps">Cps: 0</p>
+
+
+    <script>
+        var SHRINK_SPEED = 0.3;
+
+        var elButton = document.getElementById('button');
+        var elClicks = document.getElementById('clicks');
+        var elCps = document.getElementById('cps');
+        var elTime = document.getElementById('time');
+        elButton.style.height = "200px";
+        elButton.style.width = "200px";
+        elButton.style.position = "absolute";
+        elButton.style.left = (window.innerWidth / 2 - (getWidth(elButton) / 2)) + "px";
+        elButton.style.top = (window.innerHeight / 2 - (getHeight(elButton) / 2)) + "px";
+
+        var started = false;
+        var clicks = 0;
+        elClicks.innerHTML = "Clicks: " + clicks;
+        var interval;
+
+        function buttonClick() {
+            if (!started) {
+                makeSmaller();
+                started = true;
+                showTimeAndCps();
+            } else {
+                clicks++;
+                SHRINK_SPEED += 0.05;
+                setMax(SHRINK_SPEED, 1);
+                elClicks.innerHTML = "Clicks: " + clicks;
+                summonButton("200px", "200px");
+            }
+        }
+
+        function summonButton(height, width) {
+            elButton.style.height = height;
+            elButton.style.width = width;
+            var posX = randomNumber(1, window.innerWidth - getWidth(elButton));
+            var posY = randomNumber(1, window.innerHeight - getHeight(elButton));
+            elButton.style.left = posX + "px";
+            elButton.style.top = posY + "px";
+        }
+
+        function showTimeAndCps() {
+            var startTime = new Date();
+            interval = setInterval(function () {
+                //Calculating elapsed time
+                var now = new Date();
+                var elapsedTime = now.getTime() - startTime.getTime();
+                //Showing elapsed time
+                var milliseconds = Math.round((elapsedTime % 1000) / 10);
+                var seconds = Math.floor((elapsedTime / 1000) % 60);
+                elTime.innerHTML = "Time: " + seconds + "." + milliseconds;
+
+                //Calculating cps and showing it (every 25 milliseconds)
+                if (elapsedTime % 25 == 0) {
+                    cps = Math.round(clicks / (elapsedTime / 1000) * 10) / 10;
+                    elCps.innerHTML = "Cps: " + cps;
+                }
+            }, 1);
+        }
+
+        function makeSmaller() {
+            var x = setInterval(function () {
+                //Setting height and width of button
+                var h = getHeight(elButton);
+                var w = getWidth(elButton);
+                h -= SHRINK_SPEED;
+                w -= SHRINK_SPEED;
+                //Checking for min height and width of button
+                h = setMin(h, 5);
+                w = setMin(w, 5);
+                //Aplying height and width
+                elButton.style.height = h + "px";
+                elButton.style.width = w + "px";
+
+
+                if (h <= 7) { //Making the button disappear when it becomes to small
+                    elButton.parentNode.removeChild(elButton);
+                    clearInterval(interval);
+                    clearInterval(x);
+                } else { //Making that button shrinks more natural (because we use top and left for the positioning)
+                    var posX = elButton.getBoundingClientRect().left + SHRINK_SPEED / 2;
+                    var posY = elButton.getBoundingClientRect().top + SHRINK_SPEED / 2;
+                    elButton.style.left = posX + "px";
+                    elButton.style.top = posY + "px";
+                    if (h <= 35) elButton.innerHTML = "";
+                    else elButton.innerHTML = "Klik hier";
+                }
+            }, 1);
+        }
+
+        //returns te height of an element without 'px'
+        function getHeight(element) {
+            return element.style.height.replace('px', '');
+        }
+        //returns te width of an element without 'px'
+        function getWidth(element) {
+            return element.style.width.replace('px', '');
+        }
+        //To set a min value for a var
+        function setMin(i, min) {
+            if (i <= min) return i = min;
+            else return i;
+        }
+        //To set a max value for a var
+        function setMax(i, max) {
+            if (i <= max) return i = max;
+            else return i;
+        }
+
+        //Ni mijn code
+        function randomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+    </script>
+</body>
+
+</html>

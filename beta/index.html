@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <button onclick="buttonClick()" id="button">Klik hier</button>
+
+
+    <script>
+        const SHRINK_SPEED = 10;
+
+        var button = document.getElementById('button');
+        button.style.height = "200px";
+        button.style.width = "200px";
+        button.style.position = "absolute";
+
+        var started = false;
+
+        function buttonClick() {
+            if (started == false) {
+                makeSmaller();
+                started = true;
+            }
+            button.style.height = "200px";
+            button.style.width = "200px";
+            summonButton();
+        }
+
+        function summonButton() {
+            var posX = randomNumber(1, window.innerWidth - getWidth(button));
+            var posY = randomNumber(1, window.innerHeight - getHeight(button));
+            button.style.left = posX + "px";
+            button.style.top = posY + "px";
+        }
+
+        function makeSmaller() {
+            var x = setInterval(function () {
+                //Setting height and width of button
+                var h = getHeight(button);
+                var w = getWidth(button);
+                h -= 1;
+                w -= 1;
+                //Checking for min height and width of button
+                h = setMin(h, 100);
+                w = setMin(w, 100);
+                //Aplying height and width
+                button.style.height = h + "px";
+                button.style.width = w + "px";
+
+                //Making that button shrinks more natural (because we use top and left for the positioning)
+                if (h > 100) {
+                    var posX = button.getBoundingClientRect().left + 0.5;
+                    var posY = button.getBoundingClientRect().top + 0.5;
+                    button.style.left = posX + "px";
+                    button.style.top = posY + "px";
+                }
+            }, SHRINK_SPEED);
+        }
+
+        //returns te height of an element without 'px'
+        function getHeight(element) {
+            return element.style.height.replace('px', '');
+        }
+        //returns te width of an element without 'px'
+        function getWidth(element) {
+            return element.style.width.replace('px', '');
+        }
+        //To set a min value for an integer
+        function setMin(i, min) {
+            if (i <= min) return i = min;
+            else return i;
+        }
+
+        //Ni mijn code
+        function randomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+    </script>
+</body>
+
+</html>
