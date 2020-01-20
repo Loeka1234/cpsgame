@@ -17,37 +17,17 @@
     <p id="clicks">Clicks: 0</p>
     <p id="time">Time: 0</p>
     <p id="cps">Cps: 0</p>
-    <br><br>
-
-    <div id="radiobuttons">
-        <p>Size:</p>
-        <p><input type="radio" name="size" value="easy" checked onchange="setSize('easy')">easy</p>
-        <p><input type="radio" name="size" value="medium" id="mediumsize" onchange="setSize('medium')">medium</p>
-        <p><input type="radio" name="size" value="hard" onchange="setSize('hard')">hard</p>
-    </div>
 
 
     <script>
-        //Sizes for hardness
-        const SIZE_EASY = "200px";
-        const SIZE_MED = "150px";
-        const SIZE_HARD = "100px";
-        //Setting standard size
-        var size = SIZE_EASY;
-
-        //Standard shrink speed
         var SHRINK_SPEED = 0.3;
 
-        //Elements into a variable
         var elButton = document.getElementById('button');
         var elClicks = document.getElementById('clicks');
         var elCps = document.getElementById('cps');
         var elTime = document.getElementById('time');
-        var elsRadiobuttons = document.getElementById('radiobuttons');
-
-        //Setting standard size and position for button
-        elButton.style.height = size;
-        elButton.style.width = size;
+        elButton.style.height = "200px";
+        elButton.style.width = "200px";
         elButton.style.position = "absolute";
         elButton.style.left = (window.innerWidth / 2 - (getWidth(elButton) / 2)) + "px";
         elButton.style.top = (window.innerHeight / 2 - (getHeight(elButton) / 2)) + "px";
@@ -57,44 +37,20 @@
         elClicks.innerHTML = "Clicks: " + clicks;
         var interval;
 
-        //setting hardness(size)
-        function setSize(hardness) {
-            switch (hardness) {
-                case "easy":
-                    size = SIZE_EASY;
-                    break;
-                case "medium":
-                    size = SIZE_MED;
-                    break;
-                case "hard":
-                    size = SIZE_HARD;
-                    break;
-            }
-            elButton.style.height = size;
-            elButton.style.width = size;
-            elButton.style.left = (window.innerWidth / 2 - (getWidth(elButton) / 2)) + "px";
-            elButton.style.top = (window.innerHeight / 2 - (getHeight(elButton) / 2)) + "px";
-        }
-
-        //Code thet excecutes when clicking start button
         function buttonClick() {
             if (!started) {
                 makeSmaller();
                 started = true;
                 showTimeAndCps();
-
-                //Removing radiobuttons
-                elsRadiobuttons.parentNode.removeChild(elsRadiobuttons);
             } else {
                 clicks++;
                 SHRINK_SPEED += 0.05;
                 setMax(SHRINK_SPEED, 1);
                 elClicks.innerHTML = "Clicks: " + clicks;
-                summonButton(size, size);
+                summonButton("200px", "200px");
             }
         }
 
-        //To summon the button on a random x, y
         function summonButton(height, width) {
             elButton.style.height = height;
             elButton.style.width = width;
@@ -104,7 +60,6 @@
             elButton.style.top = posY + "px";
         }
 
-        //Showing time and cps
         function showTimeAndCps() {
             var startTime = new Date();
             interval = setInterval(function () {
@@ -124,7 +79,6 @@
             }, 1);
         }
 
-        //For shrinking the button
         function makeSmaller() {
             var x = setInterval(function () {
                 //Setting height and width of button
@@ -154,19 +108,6 @@
                 }
             }, 1);
         }
-
-
-
-        //Positioning the start menu button in the middle of the screen when resizing window 
-        window.onresize = windowResized;
-
-        function windowResized() {
-            if (!started) {
-                elButton.style.left = (window.innerWidth / 2 - (getWidth(elButton) / 2)) + "px";
-                elButton.style.top = (window.innerHeight / 2 - (getHeight(elButton) / 2)) + "px";
-            }
-        }
-
 
         //returns te height of an element without 'px'
         function getHeight(element) {
